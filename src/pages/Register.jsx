@@ -10,9 +10,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const [err, setErr] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const displayName = e.target[0].value;
     const email = e.target[1].value;
@@ -21,7 +23,8 @@ function Register() {
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      const storageRef = ref(storage, displayName);
+      const date = new Date().getTime();
+      const storageRef = ref(storage, `${displayName + date}`);
       await uploadBytesResumable(storageRef, file).then(() => {
         getDownloadURL(storageRef).then(async (downloadURL) => {
           try {
@@ -42,13 +45,15 @@ function Register() {
             await setDoc(doc(db, "userChats", res.user.uid), {});
             navigate("/");
           } catch (err) {
-            console.log(err);
+            //console.log(err);
             setErr(true);
+            setLoading(false);
           }
         });
       });
     } catch (err) {
       setErr(true);
+      setLoading(false);
     }
   };
   return (
@@ -66,6 +71,7 @@ function Register() {
             Add an Avatar
           </label>
           <button>Sign Up</button>
+          {loading && "Uploading and compressing the image please wait..."}
           {err && <span>Something Went Wrong</span>}
         </form>
         <p>
