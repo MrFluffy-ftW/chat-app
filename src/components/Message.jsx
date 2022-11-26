@@ -1,7 +1,4 @@
-import React from "react";
-import { useRef } from "react";
-import { useEffect } from "react";
-import { useContext } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 
@@ -24,7 +21,7 @@ export const Message = ({ message }) => {
           src={
             message.senderId === currentUser.uid
               ? currentUser.photoURL
-              : data.photoURL
+              : data.user.photoURL
           }
           alt=""
         />
